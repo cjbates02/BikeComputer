@@ -6,4 +6,6 @@ void setup() {
   setupDisplay();
 }
 
-void loop() {}
+void loop() {
+  animateBicycle();
+}
