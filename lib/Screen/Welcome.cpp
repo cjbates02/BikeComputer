@@ -1,4 +1,5 @@
 #include "Welcome.h"
+#include "BikeMetrics.h"
 #include <Arduino.h>
 
 Welcome::Welcome(Adafruit_SSD1306 &display) : Screen(display)
@@ -6,7 +7,7 @@ Welcome::Welcome(Adafruit_SSD1306 &display) : Screen(display)
     Serial.println("Welcome screen created.");
 }
 
-void Welcome::draw()
+void Welcome::draw(BikeMetrics& metrics)
 {
     display.clearDisplay();
 

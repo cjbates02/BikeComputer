@@ -1,4 +1,5 @@
 #include "Screen.h"
+#include "BikeMetrics.h"
 #pragma once
 
 class Welcome : public Screen {
@@ -6,6 +7,6 @@ class Welcome : public Screen {
         int wheelAngle = 0;
     public:
         Welcome(Adafruit_SSD1306& screenDisplay);
-        void draw() override;
+        void draw(BikeMetrics& metrics) override;
         void update() override;
 };

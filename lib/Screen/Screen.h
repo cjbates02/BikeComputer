@@ -1,4 +1,5 @@
 #include <Adafruit_SSD1306.h>
+#include "BikeMetrics.h";
 #pragma once
 
 class Screen {
@@ -10,7 +11,7 @@ class Screen {
             display.clearDisplay();
         }; // initial state of a screen.
         virtual void update() {}; // what needs to happen for this screen to update?
-        virtual void draw() = 0; // what should be shown on the screen right now?
+        virtual void draw(BikeMetrics& metrics) = 0; // what should be shown on the screen right now?
         virtual void exit() {
             display.clearDisplay();
         };  // cleanup stuff.
