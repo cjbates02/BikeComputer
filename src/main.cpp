@@ -21,5 +21,4 @@ void setup() {
 void loop() {
   currentScreen->draw(metrics);
   currentScreen->update();
-  selectBtn->isPressed();
 }
