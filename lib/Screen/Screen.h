@@ -1,5 +1,5 @@
 #include <Adafruit_SSD1306.h>
-#include "BikeMetrics.h";
+#include "BikeMetrics.h"
 #pragma once
 
 class Screen {
