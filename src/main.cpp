@@ -1,7 +1,10 @@
 #include "BikeComputer.h"
 
-void setup() {
+void setup()
+{
   BikeComputer bikeComputer;
 }
 
-void loop() {}
+void loop()
+{
+}

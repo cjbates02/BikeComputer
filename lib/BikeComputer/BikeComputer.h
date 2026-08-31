@@ -5,18 +5,21 @@
 #include "BikeMetrics.h"
 #include "Button.h"
 #include "Events.h"
+#include "HallsSensor.h"
 
 class BikeComputer
 {
 private:
     Screen *dashboard = new Dashboard(display, ScreenId::Dashboard);
     Screen *welcome = new Welcome(display, ScreenId::Welcome);
+    
+    Button *selectBtn = new Button(1, "Select Button", ButtonIds::Select, event_q);
+    HallsSensor *hallsSensor = new HallsSensor();
 
     Screen *currentScreen = welcome;
     BikeMetrics metrics = {0, 0, 0, 0};
     EventQueue<ButtonEvent> event_q;
 
-    Button *selectBtn = new Button(1, "Select Button", ButtonIds::Select, event_q);
     void processEvents();
     void handleEvent(ButtonEvent event);
     void handleSelect(ButtonEvent event);

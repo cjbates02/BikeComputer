@@ -4,8 +4,10 @@ BikeComputer::BikeComputer()
 {
     setupSerialLogging();
     setupDisplay();
+    
     currentScreen->draw(metrics);
     selectBtn->init();
+    hallsSensor->init();
 
     processEvents();
 }
