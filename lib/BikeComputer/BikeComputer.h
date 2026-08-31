@@ -4,12 +4,24 @@
 #include "Utils.h"
 #include "BikeMetrics.h"
 #include "Button.h"
+#include "Events.h"
 
-class BikeComputer {
-    private:
-        Screen* currentScreen = new Dashboard(display);
-        BikeMetrics metrics = {0, 0, 0, 0};
-        Button* selectBtn = new Button(1, "Select Button");
-    public:
-        BikeComputer();
+class BikeComputer
+{
+private:
+    Screen *dashboard = new Dashboard(display, ScreenId::Dashboard);
+    Screen *welcome = new Welcome(display, ScreenId::Welcome);
+
+    Screen *currentScreen = welcome;
+    BikeMetrics metrics = {0, 0, 0, 0};
+    EventQueue<ButtonEvent> event_q;
+
+    Button *selectBtn = new Button(1, "Select Button", ButtonIds::Select, event_q);
+    void processEvents();
+    void handleEvent(ButtonEvent event);
+    void handleSelect(ButtonEvent event);
+    void toggleScreen();
+
+public:
+    BikeComputer();
 };

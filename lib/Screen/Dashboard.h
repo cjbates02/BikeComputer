@@ -5,6 +5,6 @@
 class Dashboard : public Screen
 {
 public:
-    Dashboard(Adafruit_SSD1306& screenDisplay);
+    Dashboard(Adafruit_SSD1306& screenDisplay, ScreenId screenId);
     void draw(BikeMetrics& metrics) override;
 };

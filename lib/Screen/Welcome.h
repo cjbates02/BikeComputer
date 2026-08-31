@@ -6,7 +6,7 @@ class Welcome : public Screen {
     private:
         int wheelAngle = 0;
     public:
-        Welcome(Adafruit_SSD1306& screenDisplay);
+        Welcome(Adafruit_SSD1306& screenDisplay, ScreenId screenId);
         void draw(BikeMetrics& metrics) override;
         void update() override;
 };

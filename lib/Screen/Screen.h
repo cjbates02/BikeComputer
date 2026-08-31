@@ -2,11 +2,17 @@
 #include "BikeMetrics.h"
 #pragma once
 
+enum class ScreenId {
+    Dashboard,
+    Welcome
+};
+
 class Screen {
     protected:
         Adafruit_SSD1306& display;
     public:
-        Screen(Adafruit_SSD1306& screenDisplay) : display(screenDisplay) {}
+        ScreenId id;
+        Screen(Adafruit_SSD1306& screenDisplay, ScreenId screenId) : display(screenDisplay), id(screenId) {}
         virtual void enter() {
             display.clearDisplay();
         }; // initial state of a screen.

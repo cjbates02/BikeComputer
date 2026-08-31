@@ -1,6 +1,6 @@
 #include "Dashboard.h"
 
-Dashboard::Dashboard(Adafruit_SSD1306 &display) : Screen(display) {};
+Dashboard::Dashboard(Adafruit_SSD1306 &display, ScreenId screenId) : Screen(display, screenId) {};
 
 void Dashboard::draw(BikeMetrics& metrics)
 {

@@ -5,10 +5,19 @@
 #include <thread>
 #include <chrono>
 
-Button::Button(int gpio_pin, std::string btn_name) : pin(gpio_pin), name(btn_name) {
-    Serial.print("Created button ");
-    Serial.print(btn_name.c_str());
-    Serial.print(" on GPIO pin ");
+Button::Button(
+    int gpio_pin,
+    std::string btn_name,
+    ButtonIds btn_id,
+    EventQueue<ButtonEvent> &btn_event_q)
+    : pin(gpio_pin),
+      name(btn_name),
+      id(btn_id),
+      event_q(btn_event_q)
+{
+    Serial.println("Created button ");
+    Serial.println(btn_name.c_str());
+    Serial.println(" on GPIO pin ");
     Serial.println(gpio_pin);
 }
 
@@ -16,37 +25,54 @@ void Button::init()
 {
     pinMode(pin, INPUT_PULLUP);
     std::thread pollThread(&Button::poll, this);
-    pollThread.join();
+    pollThread.detach();
 }
 
-void Button::poll() {
+void Button::poll()
+{
     bool lastState = digitalRead(pin);
-    while (true) {
+    while (true)
+    {
         bool currentState = digitalRead(pin);
-        ButtonEvents event = determineButtonEvent(lastState, currentState);
-        if (event != ButtonEvents::None) {
-            Serial.println(buttonEventToString(event).c_str());
+        ButtonEventTypes eventType = determineButtonEventType(lastState, currentState);
+        if (eventType != ButtonEventTypes::None)
+        {
+            Serial.println(buttonEventToString(eventType).c_str());
+
+            ButtonEvent event;
+            event.type = eventType;
+            event.id = id;
+
+            event_q.push(event);
         }
         lastState = currentState;
         std::this_thread::sleep_for(std::chrono::milliseconds(10));
     }
 }
 
-ButtonEvents Button::determineButtonEvent(int lastState, int currentState) {
-    if (lastState == HIGH && currentState == LOW) {
-        return ButtonEvents::Pressed;
+ButtonEventTypes Button::determineButtonEventType(int lastState, int currentState)
+{
+    if (lastState == HIGH && currentState == LOW)
+    {
+        return ButtonEventTypes::Pressed;
     }
-    if (lastState == LOW && currentState == HIGH) {
-        return ButtonEvents::Released;
+    if (lastState == LOW && currentState == HIGH)
+    {
+        return ButtonEventTypes::Released;
     }
-    return ButtonEvents::None;
+    return ButtonEventTypes::None;
 }
 
-std::string Button::buttonEventToString(ButtonEvents event) {
-    switch (event) {
-        case ButtonEvents::Pressed: return "Pressed";
-        case ButtonEvents::Released: return "Released";
-        case ButtonEvents::None: return "None";
+std::string Button::buttonEventToString(ButtonEventTypes eventType)
+{
+    switch (eventType)
+    {
+    case ButtonEventTypes::Pressed:
+        return "Pressed";
+    case ButtonEventTypes::Released:
+        return "Released";
+    case ButtonEventTypes::None:
+        return "None";
     }
     return "Unknown Event";
 }

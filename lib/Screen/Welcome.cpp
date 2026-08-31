@@ -2,7 +2,7 @@
 #include "BikeMetrics.h"
 #include <Arduino.h>
 
-Welcome::Welcome(Adafruit_SSD1306 &display) : Screen(display)
+Welcome::Welcome(Adafruit_SSD1306 &display, ScreenId screenId) : Screen(display, screenId)
 {
     Serial.println("Welcome screen created.");
 }
