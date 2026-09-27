@@ -31,7 +31,6 @@ void HallsSensor::hallsInterrupt() {
     event.id = EventIds::WheelRevolution;
     event.wheel.revolutionTime = instance->revolutionTime;
     instance->event_q.pushFromISR(event);
-    Serial.println("halls interrupt called...");
 }
 
 float HallsSensor::getSpeed() {

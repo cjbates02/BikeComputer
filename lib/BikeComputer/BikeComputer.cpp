@@ -35,9 +35,17 @@ void BikeComputer::handleEvent(Event event)
     case EventIds::ButtonReleased:
         handleBtnReleased(event);
         break;
+    case EventIds::WheelRevolution:
+        handleWheelRevolution(event);
     default:
         break;
     }
+}
+
+void BikeComputer::handleWheelRevolution(Event event) {
+    Serial.println("wheel revolution time: ");
+    Serial.print(event.wheel.revolutionTime);
+    Serial.println("");
 }
 
 void BikeComputer::handleBtnPressed(Event event)

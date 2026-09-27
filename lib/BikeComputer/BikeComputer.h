@@ -24,6 +24,7 @@ private:
     void handleEvent(Event event);
     void handleBtnPressed(Event event);
     void handleBtnReleased(Event event);
+    void handleWheelRevolution(Event event);
     void toggleScreen();
 
 public:
