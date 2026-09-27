@@ -4,7 +4,7 @@ BikeComputer::BikeComputer()
 {
     setupSerialLogging();
     setupDisplay();
-    
+
     currentScreen->draw(metrics);
     selectBtn->init();
     hallsSensor->init();
@@ -17,32 +17,41 @@ void BikeComputer::processEvents()
     Serial.println("starting event processor...");
     while (true)
     {
-        ButtonEvent event = event_q.pop();
-        handleEvent(event);
+        Event event;
+        if (event_q.pop(event)) {
+            handleEvent(event);
+        };
     }
 }
 
-void BikeComputer::handleEvent(ButtonEvent event)
+void BikeComputer::handleEvent(Event event)
 {
-    Serial.println("handling a button event...");
+    // Serial.println("handling an event...");
     switch (event.id)
     {
-    case ButtonIds::Select:
-        handleSelect(event);
+    case EventIds::ButtonPressed:
+        handleBtnPressed(event);
+        break;
+    case EventIds::ButtonReleased:
+        handleBtnReleased(event);
+        break;
+    default:
+        break;
     }
 }
 
-void BikeComputer::handleSelect(ButtonEvent event)
+void BikeComputer::handleBtnPressed(Event event)
 {
-    Serial.println("handling select button event...");
-    switch (event.type)
+    if (event.button.btnId == ButtonIds::Select)
     {
-    case ButtonEventTypes::Pressed:
         Serial.println("handling select button press event...");
         toggleScreen();
-    case ButtonEventTypes::Released:
-        return; // to be implemented.
     }
+}
+
+void BikeComputer::handleBtnReleased(Event event)
+{
+    return; // tbd
 }
 
 void BikeComputer::toggleScreen()

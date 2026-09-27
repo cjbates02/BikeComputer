@@ -2,15 +2,34 @@
 #include <thread>
 #include <chrono>
 
-void HallsSensor::poll() {
-    while (true) {
-        Serial.println(analogRead(GPIO_PIN));
-        std::this_thread::sleep_for(std::chrono::milliseconds(100));
-    }
-}
+HallsSensor* HallsSensor::instance = nullptr;
 
 void HallsSensor::init() {
-    analogReadResolution(12);
-    std::thread pollThread(&HallsSensor::poll, this);
-    pollThread.detach();
+    pinMode(GPIO_PIN, INPUT_PULLUP);
+    instance = this;
+    attachInterrupt(
+        digitalPinToInterrupt(GPIO_PIN),
+        HallsSensor::hallsInterrupt,
+        FALLING
+    );
+}
+
+void HallsSensor::hallsInterrupt() {
+    if (instance == nullptr) {
+        return;
+    }
+
+    uint32_t now = micros();
+    instance->revolutionTime = now - instance->lastRevolutionTime;
+    instance->lastRevolutionTime = now;
+}
+
+float HallsSensor::getSpeed() {
+    float seconds =
+        revolutionTime / 1000000.0f;
+    return wheelSize / seconds;
+}
+
+void HallsSensor::pollInterrupts() {
+    
 }

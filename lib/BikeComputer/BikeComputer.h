@@ -18,11 +18,12 @@ private:
 
     Screen *currentScreen = welcome;
     BikeMetrics metrics = {0, 0, 0, 0};
-    EventQueue<ButtonEvent> event_q;
+    EventQueue<Event, 32> event_q;
 
     void processEvents();
-    void handleEvent(ButtonEvent event);
-    void handleSelect(ButtonEvent event);
+    void handleEvent(Event event);
+    void handleBtnPressed(Event event);
+    void handleBtnReleased(Event event);
     void toggleScreen();
 
 public:

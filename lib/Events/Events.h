@@ -1,27 +1,70 @@
-#include <condition_variable>
-#include <iostream>
-#include <mutex>
-#include <queue>
-
 #pragma once
 
-template <typename T>
+#include <freertos/FreeRTOS.h>
+#include <freertos/queue.h>
+
+enum class EventIds {
+    WheelRevolution,
+    ButtonPressed,
+    ButtonReleased,
+    None
+};
+
+enum class ButtonIds
+{
+    Select,
+    Next,
+    Previous
+};
+
+struct Event {
+    EventIds id;
+    union {
+        struct {
+            uint32_t revolutionTime;
+        } wheel;
+        struct {
+            ButtonIds btnId;
+        } button;
+    };
+};
+
+template <typename T, size_t SIZE>
 class EventQueue {
-protected: 
-    std::queue<T> event_queue;
-    std::mutex mtx;
-    std::condition_variable cv;
+private:
+    QueueHandle_t queue;
+
 public:
-    void push(T event) {
-        std::unique_lock<std::mutex> lock(mtx);
-        event_queue.push(event);
-        cv.notify_one();
+    EventQueue()
+    {
+        queue = xQueueCreate(SIZE, sizeof(T));
     }
-    T pop() {
-        std::unique_lock<std::mutex> lock(mtx);
-        cv.wait(lock, [this]() { return !event_queue.empty(); });
-        T event = event_queue.front();
-        event_queue.pop();
-        return event;
+
+    bool push(T event)
+    {
+        return xQueueSend(queue, &event, 0) == pdTRUE;
+    }
+
+    bool pushFromISR(T event)
+    {
+        BaseType_t higherPriorityTaskWoken = pdFALSE;
+
+        bool success =
+            xQueueSendFromISR(
+                queue,
+                &event,
+                &higherPriorityTaskWoken
+            ) == pdTRUE;
+
+        if (higherPriorityTaskWoken) {
+            portYIELD_FROM_ISR();
+        }
+
+        return success;
+    }
+
+    bool pop(T& event)
+    {
+        return xQueueReceive(queue, &event, 0) == pdTRUE;
     }
 };

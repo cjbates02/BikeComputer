@@ -9,7 +9,7 @@ Button::Button(
     int gpio_pin,
     std::string btn_name,
     ButtonIds btn_id,
-    EventQueue<ButtonEvent> &btn_event_q)
+    EventQueue<Event, 32> &btn_event_q)
     : pin(gpio_pin),
       name(btn_name),
       id(btn_id),
@@ -34,14 +34,14 @@ void Button::poll()
     while (true)
     {
         bool currentState = digitalRead(pin);
-        ButtonEventTypes eventType = determineButtonEventType(lastState, currentState);
-        if (eventType != ButtonEventTypes::None)
+        EventIds eventId = determineButtonEvent(lastState, currentState);
+        if (eventId != EventIds::None)
         {
-            Serial.println(buttonEventToString(eventType).c_str());
+            Serial.println(buttonEventToString(eventId).c_str());
 
-            ButtonEvent event;
-            event.type = eventType;
-            event.id = id;
+            Event event;
+            event.id = eventId;
+            event.button.btnId = id;
 
             event_q.push(event);
         }
@@ -50,28 +50,28 @@ void Button::poll()
     }
 }
 
-ButtonEventTypes Button::determineButtonEventType(int lastState, int currentState)
+EventIds Button::determineButtonEvent(int lastState, int currentState)
 {
     if (lastState == HIGH && currentState == LOW)
     {
-        return ButtonEventTypes::Pressed;
+        return EventIds::ButtonPressed;
     }
     if (lastState == LOW && currentState == HIGH)
     {
-        return ButtonEventTypes::Released;
+        return EventIds::ButtonReleased;
     }
-    return ButtonEventTypes::None;
+    return EventIds::None;
 }
 
-std::string Button::buttonEventToString(ButtonEventTypes eventType)
+std::string Button::buttonEventToString(EventIds eventType)
 {
     switch (eventType)
     {
-    case ButtonEventTypes::Pressed:
+    case EventIds::ButtonPressed:
         return "Pressed";
-    case ButtonEventTypes::Released:
+    case EventIds::ButtonReleased:
         return "Released";
-    case ButtonEventTypes::None:
+    case EventIds::None:
         return "None";
     }
     return "Unknown Event";
