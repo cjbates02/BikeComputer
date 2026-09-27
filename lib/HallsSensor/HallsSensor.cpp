@@ -4,6 +4,10 @@
 
 HallsSensor* HallsSensor::instance = nullptr;
 
+HallsSensor::HallsSensor(EventQueue<Event, 32> &halls_event_q) : event_q(halls_event_q) {
+    Serial.println("created halls sensor...");
+}
+
 void HallsSensor::init() {
     pinMode(GPIO_PIN, INPUT_PULLUP);
     instance = this;
@@ -22,14 +26,16 @@ void HallsSensor::hallsInterrupt() {
     uint32_t now = micros();
     instance->revolutionTime = now - instance->lastRevolutionTime;
     instance->lastRevolutionTime = now;
+
+    Event event;
+    event.id = EventIds::WheelRevolution;
+    event.wheel.revolutionTime = instance->revolutionTime;
+    instance->event_q.pushFromISR(event);
+    Serial.println("halls interrupt called...");
 }
 
 float HallsSensor::getSpeed() {
     float seconds =
         revolutionTime / 1000000.0f;
     return wheelSize / seconds;
-}
-
-void HallsSensor::pollInterrupts() {
-    
 }

@@ -14,7 +14,7 @@ private:
     Screen *welcome = new Welcome(display, ScreenId::Welcome);
     
     Button *selectBtn = new Button(1, "Select Button", ButtonIds::Select, event_q);
-    HallsSensor *hallsSensor = new HallsSensor();
+    HallsSensor *hallsSensor = new HallsSensor(event_q);
 
     Screen *currentScreen = welcome;
     BikeMetrics metrics = {0, 0, 0, 0};

@@ -1,3 +1,4 @@
+#include "Events.h"
 #include <Arduino.h>
 
 class HallsSensor
@@ -10,7 +11,8 @@ class HallsSensor
         static void hallsInterrupt();
         static HallsSensor* instance;
         float getSpeed();
-        void pollInterrupts();
+        EventQueue<Event, 32> &event_q;
     public:
+        HallsSensor(EventQueue<Event, 32> &event_q);
         void init();
 };
