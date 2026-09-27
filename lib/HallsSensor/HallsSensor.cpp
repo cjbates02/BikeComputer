@@ -32,9 +32,3 @@ void HallsSensor::hallsInterrupt() {
     event.wheel.revolutionTime = instance->revolutionTime;
     instance->event_q.pushFromISR(event);
 }
-
-float HallsSensor::getSpeed() {
-    float seconds =
-        revolutionTime / 1000000.0f;
-    return wheelSize / seconds;
-}

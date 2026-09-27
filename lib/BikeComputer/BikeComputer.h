@@ -20,12 +20,15 @@ private:
     BikeMetrics metrics = {0, 0, 0, 0};
     EventQueue<Event, 32> event_q;
 
+    float wheelCircumference = 12.0; // inches
+
     void processEvents();
     void handleEvent(Event event);
     void handleBtnPressed(Event event);
     void handleBtnReleased(Event event);
     void handleWheelRevolution(Event event);
     void toggleScreen();
+    float calculateSpeedMph(uint32_t revolutionTime);
 
 public:
     BikeComputer();
