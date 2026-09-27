@@ -47,6 +47,9 @@ void BikeComputer::handleWheelRevolution(Event event) {
     Serial.println("MPH: ");
     Serial.print(speedMph);
     Serial.println("");
+
+    metrics.speed = speedMph;
+    currentScreen->draw(metrics);
 }
 
 void BikeComputer::handleBtnPressed(Event event)
