@@ -20,7 +20,8 @@ private:
     BikeMetrics metrics = {0, 0, 0, 0};
     EventQueue<Event, 32> event_q;
 
-    float wheelCircumference = 12.0; // inches
+    float wheelCircumference = 29.0; // inches
+    float milesPerRevolution = (wheelCircumference / 12.0f) / 5280.0f;
 
     void processEvents();
     void handleEvent(Event event);
@@ -29,6 +30,7 @@ private:
     void handleWheelRevolution(Event event);
     void toggleScreen();
     float calculateSpeedMph(uint32_t revolutionTime);
+    float calculateDistance();
 
 public:
     BikeComputer();

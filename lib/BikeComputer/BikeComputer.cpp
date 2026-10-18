@@ -18,7 +18,8 @@ void BikeComputer::processEvents()
     while (true)
     {
         Event event;
-        if (event_q.pop(event)) {
+        if (event_q.pop(event))
+        {
             handleEvent(event);
         };
     }
@@ -42,13 +43,20 @@ void BikeComputer::handleEvent(Event event)
     }
 }
 
-void BikeComputer::handleWheelRevolution(Event event) {
+void BikeComputer::handleWheelRevolution(Event event)
+{
     float speedMph = calculateSpeedMph(event.wheel.revolutionTime);
+    float distance = calculateDistance();
+
+    metrics.speed = speedMph;
+    metrics.distance = distance;
+
     Serial.println("MPH: ");
     Serial.print(speedMph);
     Serial.println("");
+    Serial.println("DISTANCE (M): ");
+    Serial.print(distance);
 
-    metrics.speed = speedMph;
     currentScreen->draw(metrics);
 }
 
@@ -86,9 +94,15 @@ void BikeComputer::toggleScreen()
     }
 }
 
-float BikeComputer::calculateSpeedMph(uint32_t revolutionTime) {
-    if (revolutionTime == 0) return 0.0f;
-    float milesPerRevolution = (wheelCircumference / 12.0f) / 5280.0f;
+float BikeComputer::calculateSpeedMph(uint32_t revolutionTime)
+{
+    if (revolutionTime == 0)
+        return 0.0f;
     float secondsPerRevolution = revolutionTime / 1000000.0f;
     return (milesPerRevolution / secondsPerRevolution) * 3600.0f;
+}
+
+float BikeComputer::calculateDistance()
+{
+    return metrics.distance + milesPerRevolution;
 }
