@@ -2,29 +2,44 @@
 #include <thread>
 #include <chrono>
 
-HallsSensor* HallsSensor::instance = nullptr;
+HallsSensor *HallsSensor::instance = nullptr;
 
-HallsSensor::HallsSensor(EventQueue<Event, 32> &halls_event_q) : event_q(halls_event_q) {
+HallsSensor::HallsSensor(EventQueue<Event, 32> &halls_event_q, uint32_t hallsMinRevolutionInterval) : event_q(halls_event_q), minRevolutionInterval(hallsMinRevolutionInterval)
+{
     Serial.println("created halls sensor...");
 }
 
-void HallsSensor::init() {
+void HallsSensor::init()
+{
     pinMode(GPIO_PIN, INPUT_PULLUP);
     instance = this;
     attachInterrupt(
         digitalPinToInterrupt(GPIO_PIN),
         HallsSensor::hallsInterrupt,
-        FALLING
-    );
+        FALLING);
 }
 
-void HallsSensor::hallsInterrupt() {
-    if (instance == nullptr) {
+void HallsSensor::hallsInterrupt()
+{
+    if (instance == nullptr)
+    {
         return;
     }
 
     uint32_t now = micros();
-    instance->revolutionTime = now - instance->lastRevolutionTime;
+
+    if (instance->isFirstRevolution)
+    {
+        instance->lastRevolutionTime = now;
+        instance->isFirstRevolution = false;
+    }
+    uint32_t interval = now - instance->lastRevolutionTime;
+
+    if (interval < instance->minRevolutionInterval)
+    {
+        return;
+    }
+    instance->revolutionTime = interval;
     instance->lastRevolutionTime = now;
 
     Event event;
