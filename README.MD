@@ -22,3 +22,24 @@ Momentum is a lightweight open source bike computer for an ESP32 microcontroller
 ![alt text](image.png)
 
 ![alt text](image-1.png)
+
+
+## Wiring
+![alt text](image-2.png)
+
+### Firmware Architecture
+```mermaid
+flowchart TD
+    A["Hardware Events"]
+
+    A --> B["Hall Sensor (ISR)"]
+    A --> C["Buttons (Polling)"]
+
+    B --> D["Event Queue"]
+    C --> D
+
+    D --> E["Application Logic"]
+    E --> F["Bike Metrics"]
+    F --> G["Display Manager"]
+    G --> H["OLED UI"]
+```
