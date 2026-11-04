@@ -1,5 +1,5 @@
 # Momentum
-Momentum is a lightweight open source bike computer for an ESP32 microcontroller. It measures speed and distance using a halls effect sensor and writes to a 0.96 OLED display with button navigation between the welcome screen and the metrics dashboard.
+Momentum is a lightweight open source bike computer for an ESP32 microcontroller. It measures speed and distance using real time event driven architecture.
 
 | Component | Model | Purpose |
 |---|---|---|
